@@ -1,14 +1,108 @@
-
-<div class="contariner met-5">
+<div class="container mt-5">
   <div class="row">
     <div class="col-lg-8 offset-lg-2">
       <div class="card">
         <div class="card-body text-center">
           <h3 class="tittle">Tarjeta de credito</h3>
         </div>
-
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="titulo" style="text-align: center;">Agregar Tarjeta</h5>
+          <app-tarjeta-credito></app-tarjeta-credito>
+          <form [formGroup]="form" (ngSubmit)="agregarTarjeta(getTarjetaFromForm())">
+            <div class="input-group mb-3">
+              <span class="input-group-text">
+                <i class="fas fa-user" [class.green-icon]="this.form.get('name')?.valid" [class.green-icon]="this.form.get('name')?.invalid"></i>
+              </span>
+              <input type="text" formControlName="name" class="form-control" placeholder="Titular" 
+                     [ngClass]="{'is-invalid': form.get('name')?.invalid && form.get('name')?.touched}">
+              <div class="invalid-feedback" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+                El nombre del titular es obligatorio
+              </div>
+            </div>
+            
+            <div class="input-group mb-3">
+              <span class="input-group-text"><i class="fa-regular fa-credit-card"></i></span>
+              <input type="text" formControlName="numberTarget" class="form-control" placeholder="Numero Tarjeta"
+                     [ngClass]="{'is-invalid': form.get('numberTarget')?.invalid && form.get('numberTarget')?.touched}">
+              <div class="invalid-feedback" *ngIf="form.get('numberTarget')?.invalid && form.get('numberTarget')?.touched">
+                <span *ngIf="form.get('numberTarget')?.errors?.['required']">El número de tarjeta es obligatorio</span>
+                <span *ngIf="form.get('numberTarget')?.errors?.['minlength'] || form.get('numberTarget')?.errors?.['maxlength']">
+                  El número debe tener 16 dígitos
+                </span>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-lg-7">
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fa-regular fa-calendar-alt"></i></span>
+                  <input type="text" formControlName="expiration" class="form-control" placeholder="MM/YY"
+                         [ngClass]="{'is-invalid': form.get('expiration')?.invalid && form.get('expiration')?.touched}">
+                  <div class="invalid-feedback" *ngIf="form.get('expiration')?.invalid && form.get('expiration')?.touched">
+                    <span *ngIf="form.get('expiration')?.errors?.['required']">La fecha de expiración es obligatoria</span>
+                    <span *ngIf="form.get('expiration')?.errors?.['pattern']">El formato debe ser MM/YY</span>
+                  </div>
+                </div>
+              </div>  
+              
+              <div class="col-lg-5">
+                <div class="input-group mb-3">
+                  <span class="input-group-text"><i class="fa fa-key"></i></span>
+                  <input type="password" formControlName="cvv" class="form-control" placeholder="CVV"
+                         [ngClass]="{'is-invalid': form.get('cvv')?.invalid && form.get('cvv')?.touched}">
+                  <div class="invalid-feedback" *ngIf="form.get('cvv')?.invalid && form.get('cvv')?.touched">
+                    <span *ngIf="form.get('cvv')?.errors?.['required']">El CVV es obligatorio</span>
+                    <span *ngIf="form.get('cvv')?.errors?.['minlength'] || form.get('cvv')?.errors?.['maxlength']">
+                      El CVV debe tener entre 3 y 4 dígitos
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="form.invalid" onclick="agregarTarjeta()">
+                <i class="fa-solid fa-database"></i>&nbsp;
+                Aceptar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="titulo" style="text-align: center;">Listado Tarjeta</h5>
+          <table class="table" *ngIf="listTarjetas.length > 0">
+            <thead>
+              <tr>
+                <th>Titular</th>
+                <th>Número</th>
+                <th>Fecha Exp.</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tarjeta of listTarjetas">
+                <td>{{tarjeta.name}}</td>
+                <td>{{tarjeta.numberTarget}}</td>
+                <td>{{tarjeta.expiration}}</td>
+                <td><i class="fa-regular fa-pen-to-square text-info" (click)="editarTarjeta(tarjeta)"></i></td>
+                <td><i class="fa-regular fa-trash-can text-danger" (click)="eliminarTarjeta(tarjeta.id)"></i></td>
+              </tr>
+            </tbody>
+          </table>
+          <h6 *ngIf="listTarjetas.length === 0">No hay tarjetas para mostrar</h6>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
